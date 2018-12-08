@@ -9,7 +9,9 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "vue": "^2.5.17",
+    "vue-infinite-scroll": "^2.0.2",
     "vue-router": "^3.0.1",
     "vue-svg-loader": "^0.11.0",
     "vuex": "^3.0.1"
