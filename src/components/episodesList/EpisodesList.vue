@@ -5,16 +5,17 @@
         <div class="episodes__search">
             <!-- search icon -->
             <SearchIcon />
-            <input type="text" placeholder="Search">
+            <input type="text" placeholder="Search" @input="handleSearch($event.target.value)">
         </div>
 
-        <ul class="episodes__list">
-            <li v-for="episode in episodes" :key="episode.id" >
-                <!-- Episode Item -->
-                <EpisodeListItem :episode="episode" />
-            </li>
-            <!-- ... -->
-        </ul>
+        <div v-infinite-scroll="loadPage" infinite-scroll-disabled="isDone" infinite-scroll-distance="10">
+            <ul class="episodes__list">
+                <li v-for="episode in episodes" :key="episode.id" >
+                    <!-- Episode Item -->
+                    <EpisodeListItem :episode="episode" />
+                </li>
+            </ul>
+        </div>
 
         <div v-if="isLoading" class="episodes__loader">
         Loading more
@@ -25,30 +26,69 @@
 <script>
 import SearchIcon from '@/assets/icon-search.svg'
 import EpisodeListItem from '@/components/episodesListItem/EpisodesListItem'
+import infiniteScroll from 'vue-infinite-scroll'
+import debounce from 'lodash.debounce'
 
 export default {
     data() {
         return {
             isLoading : false,
             episodes: [],
-            page: 1
+            actualPage: 0,
+            isLoaded: false,
+            searchValue: ''
         } 
     },
+
+    computed: {
+        isDone() {
+            if(this.isLoading || this.isLoaded) {
+                return true
+            }
+        }
+        // searchEpisode: {
+        //     get() {
+        //         return this.searchValue;
+        //     },
+        //     set(val) {
+        //         this.searchValue = val;
+        //         search(val)
+        //     }
+        // }
+    },
+
     components: {
         SearchIcon,
         EpisodeListItem
     },
     created() {
-        fetch('http://tiny-rick.tk/api/episode/')
-            .then( (data) => data.json())
-            .then( (data) => {
-                this.episodes = data.results
-                console.log(data.results);
-            })
+        this.loadPage()
     },
     methods: {
-        
-    }
+        async loadPage() {
+            this.actualPage += 1;
+            this.isLoading = true;
+            try {
+                const response = await fetch( `http://tiny-rick.tk/api/episode?page=${this.actualPage}&name=${this.searchValue}` )
+                    .then( (data) => data.json())
+                    .then( (data) => {
+                
+                    this.episodes = [...this.episodes, ...data.results]
+                    this.actualPage == data.info.pages ? this.isLoaded = true : ''
+                    this.isLoading = false;
+                })
+            } catch(err) {
+                console.warn(err);
+            } 
+        },
+        handleSearch : debounce(function(val) {
+            this.actualPage = 0;
+            this.searchValue = val;
+            this.episodes = [];
+            this.isLoaded = false;
+            this.loadPage()
+        }, 500)
+    },
 }
 </script>
 
