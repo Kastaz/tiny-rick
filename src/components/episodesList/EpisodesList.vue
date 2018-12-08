@@ -10,10 +10,17 @@
 
         <div v-infinite-scroll="loadPage" infinite-scroll-disabled="isDone" infinite-scroll-distance="10">
             <ul class="episodes__list">
-                <li v-for="episode in episodes" :key="episode.id" >
-                    <!-- Episode Item -->
-                    <EpisodeListItem :episode="episode" />
-                </li>
+                <router-link 
+                    v-for="episode in episodes" 
+                    :key="episode.id" 
+                    :to="{ 
+                        name: 'episodeDetails', 
+                        params:{ id: episode.id} 
+                    }"
+                    tag = 'li'>
+                
+                        <EpisodeListItem :episode="episode" />
+                </router-link>
             </ul>
         </div>
 
@@ -22,6 +29,17 @@
         </div>
     </div>
 </template>
+
+<style lang="scss" scoped>
+    .episodes {
+        &__list {
+            li {
+                cursor: pointer;
+            }
+        }
+    }
+</style>
+
 
 <script>
 import SearchIcon from '@/assets/icon-search.svg'
