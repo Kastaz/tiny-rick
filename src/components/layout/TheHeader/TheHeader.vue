@@ -5,12 +5,19 @@
             <Logo />
         </a>
         
-        <button @click="toggleNav" class="header__nav-trigger">
+        <button 
+            @click="toggleNav" 
+            class="header__nav-trigger"
+            data-test="burger">
             <!-- Hamburger Icon -->
             <Hamburger />
         </button>
 
-        <nav class="header__nav" :class="{ 'is-visible' : isVisible}">
+        <nav 
+            class="header__nav" 
+            :class="{ 'is-visible' : isVisible}"
+            data-test="nav">
+
             <a class="header__nav-link" href="/">
             Episodes
             </a>
@@ -39,6 +46,7 @@ export default {
   methods: {
       toggleNav(){
           this.isVisible = !this.isVisible
+          this.$emit('navToggled', this.isVisible);
       }
   }
 }
