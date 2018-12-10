@@ -9,6 +9,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "date-fns": "^1.29.0",
     "lodash.debounce": "^4.0.8",
     "vue": "^2.5.17",
     "vue-infinite-scroll": "^2.0.2",

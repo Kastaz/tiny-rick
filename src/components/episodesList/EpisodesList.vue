@@ -46,19 +46,18 @@ import SearchIcon from '@/assets/icon-search.svg'
 import EpisodeListItem from '@/components/episodesListItem/EpisodesListItem'
 import infiniteScroll from 'vue-infinite-scroll'
 import debounce from 'lodash.debounce'
+import { mapState } from 'vuex'
 
 export default {
     data() {
         return {
-            isLoading : false,
-            episodes: [],
-            actualPage: 0,
-            isLoaded: false,
-            searchValue: ''
+          
         } 
     },
 
     computed: {
+        ...mapState('episodes', ['episodes']),
+
         isDone() {
             if(this.isLoading || this.isLoaded) {
                 return true
@@ -80,10 +79,11 @@ export default {
         EpisodeListItem
     },
     created() {
-        this.loadPage()
+        // this.loadPage()
     },
     methods: {
         async loadPage() {
+            return
             this.actualPage += 1;
             this.isLoading = true;
             try {
